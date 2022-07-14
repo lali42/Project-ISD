@@ -1,0 +1,1053 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+# <MoveWindow>:
+
+<ISD>
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width,root.height
+
+        ActionBar:
+            orientation: "horizontal"
+            pos_hint: {'top':1}
+            height: 50
+            background_color: [0.95,0.95,0.95,1]
+
+            ActionView:
+                use_separator: True
+
+                ActionPrevious:
+                    app_icon:'Image/title_bar/logo.png'
+                    title: 'Images Screening Detection'
+                    color:'#ffffff'
+                    with_previous: False
+
+                ActionOverflow:
+
+                MyActionButton:
+                    icon: 'Image/title_bar/reless_hover.png' if self.hovered else 'Image/title_bar/reless.png'
+                    # if root.hovered else 'Image/title_bar/reless_hover.png'
+                    width: 40 if self.hovered else 40
+                    on_press: app.Minus_app_button()
+                    border: 10,10,10,10
+                MyActionButton:
+                    icon: 'Image/title_bar/exit_hover.png' if self.hovered else 'Image/title_bar/exit.png'
+                    # if root.hovered else 'Image/title_bar/exit_hover.png'
+                    width: 40 if self.hovered else 40
+                    on_press: app.close_app_button()
+                    border: 10,10,10,10
+
+        BoxLayout:
+
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                Rectangle:
+                    source:'Image/BG.jpg'
+                    size: root.width, root.height-50
+                    pos: self.pos
+            
+            MDNavigationRail:
+                id: rail
+                md_bg_color: get_color_from_hex("#141414")
+                color_normal: get_color_from_hex("#FFFFFF")
+                color_active: get_color_from_hex("#223C5B")
+                use_hover_behavior: True
+                hover_bg: 0, 0, 0, 1
+
+                MDNavigationRailItem:
+                    id:screening
+                    icon: "image-search-outline"
+                    # text: "Screening"
+                    font_size:24
+                    pos_hint: {"center_x": .5,"center_y": .5}
+                    size_hint: 1,1
+                    on_release:
+                        screen_manager.transition.direction = 'right'
+                        screen_manager.current = "screening"
+
+                MDNavigationRailItem:
+                    id:training
+                    icon: "head-lightbulb-outline"
+                    # text: "Training"
+                    font_size:24
+                    on_release:
+                        screen_manager.current = "trainng"
+
+                MDNavigationRailItem:
+                    id:tutorial
+                    icon: "book-play-outline"
+                    # text: "Tutorial"
+                    font_size:24
+                    on_release:
+                        screen_manager.current = "tutorial"
+
+                # MDNavigationRailItem:
+                #     id:setting
+                #     icon: "cogs"
+                #     text: "Setting"
+                #     font_size:24
+                #     on_release:
+                #         screen_manager.current = "setting"
+
+            BoxLayout:
+                padding: "15dp"
+                
+                ScreenManager:
+                    id: screen_manager
+
+                    Screen:
+                        name:"screening"
+
+                        BoxLayout:
+                            orientation: "vertical"
+                            spacing:"12dp"
+                            pos_hint:{"top":1}
+                            size_hint:1,0.5
+
+                            BoxLayout:
+                                orientation: "horizontal"
+                                size_hint:1,0.2
+                                spacing:"12dp"
+                                size_hint_y:None
+                                height:65
+
+                                    
+                                Spinner:
+                                    id:model
+                                    text:"เลือกโมเดล"
+                                    font_size:18
+                                    font_name: root.font
+                                    values:root.path_models
+                                    on_text:root.select_model(model.text)
+                                    color:'#000000'
+                                    background_color:'#ffffff'
+                                    background_normal:'#ffffff'
+                                    height:50
+
+                                Label:
+                                    text: "ภาพที่ใช้ตรวจสอบ"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    halign:"right"
+                                    pos_hint:{"center_y":0.7}
+                                
+
+                                MDFloatingActionButton:
+                                    id:images
+                                    icon: "folder-open-outline"
+                                    text: "Open manager"
+                                    icon_color:1, 1, 1,1
+                                    md_bg_color:0, 0, 0, 1
+                                    text_size: self.size
+                                    halign:"center"
+                                    valign: "middle"
+                                    on_release: 
+                                        app.file_chooser("path_images")
+
+
+                                Label:
+                                    id:path_images
+                                    text: ""
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    halign:"left"
+                                
+                                Button:
+                                    id:sceering_btn
+                                    text: "ตรวจสอบ"
+                                    font_name: root.font
+                                    color:'#ffffff'
+                                    background_color:'#223C5B'
+                                    font_size:18
+                                    on_release: 
+                                        root.screening_model(model.text)
+                                        # app.alert_running()
+
+                                Button:
+                                    id:del_btn
+                                    text: "ลบ"
+                                    font_name: root.font
+                                    color:'#223C5B'
+                                    font_size:18
+                                    background_color:'#ffffff'
+                                    background_normal:'#ffffff'
+                                    on_release:root.remove_model(model.text)
+
+                            BoxLayout:
+                                orientation: "vertical"
+                                size_hint:1,0.2
+                                spacing:"12dp"
+                                
+                                Label:
+                                    text: "คำที่ต้องการค้าหา *คั่นด้วย ','"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                
+                                TextInput:
+                                    id: txt_saerch
+                                    font_name: root.font
+                                    font_size:16
+                                    height:30
+                                    multiline: True
+
+                            BoxLayout:
+                                orientation: "vertical"
+                                size_hint:1,0.2
+                                spacing:"12dp"
+
+                                BoxLayout:
+                                    orientation: "horizontal"
+                                    spacing:"12dp"
+
+                                    Label:
+                                        text: "สลิปโอนเงิน"
+                                        font_name: root.font
+                                        font_size:18
+                                        color:'#ffffff'
+                                        text_size: self.size
+
+                                    Button:
+                                        text: "Export"
+                                        font_name: root.font
+                                        color:'#223C5B'
+                                        font_size:18
+                                        size_hint_x: None
+                                        width: 120
+                                        size_hint_y:None
+                                        height:50
+                                        background_color:'#ffffff'
+                                        background_normal:'#ffffff'
+                                        on_release:root.get_value_export("slip")
+
+                                BoxLayout:
+                                    orientation: "horizontal"
+                                    spacing:"12dp"
+                                    
+                                    Label:
+                                        text: "ไม่ใช่สลิปโอนเงิน"
+                                        font_name: root.font
+                                        font_size:18
+                                        color:'#ffffff'
+                                        text_size: self.size
+                                        valign: "middle"
+
+
+                                    Button:
+                                        text: "Export"
+                                        font_name: root.font
+                                        color:'#223C5B'
+                                        font_size:18
+                                        size_hint_x: None
+                                        width: 120
+                                        size_hint_y:None
+                                        height:50
+                                        background_color:'#ffffff'
+                                        background_normal:'#ffffff'
+                                        on_release:root.get_value_export("not_slip")
+
+                    Screen:
+                        name:"trainng"
+
+                        BoxLayout:
+
+                            ScreenManager:
+                                id: step_trainng
+
+                                Screen:
+                                    name:"step1"
+
+                                    BoxLayout:
+                                        orientation: 'vertical'
+                                        spacing: "12dp"
+                                        size_hint:1,0.8
+                                        pos_hint:{"top":1}
+
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint: 1,0.2
+
+                                            Label:
+                                                text:"ขั้นตอนที่ 1 สร้างโมเดล"
+                                                font_name: root.font
+                                                font_size:24
+                                                underline:True
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                valign: "top"
+
+                                            MDTextField:
+                                                id: name_model
+                                                hint_text: "Name Model"
+                                                helper_text: "English Only"
+                                                helper_text_mode: "persistent"
+                                                helper_text_color_normal: 0, 1, 0, 1
+                                                multiline: False
+                                                font_name_hint_tex: root.font
+                                                size_hint_x: None
+                                                width: 400
+                                                font_size:18
+                                                radius: 8, 8, 8, 8
+                                                normal_color: 1, 0, 0, 1
+                                                line_color_focus: "#ffffff"
+                                                normal_color:1, 0, 0, 1
+                                                mode: "fill"
+                                                valign: "top"
+
+                                            Label:
+                                                text:"1 ภาพที่ใช้ในการฝึก"
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                padding:"20dp","10dp"
+                                                text:"ในโฟลเดอร์ที่ใช้ในการฝึกต้องประกอบด้วยโฟลเดอร์ slip และ not_slip"
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                padding:"20dp","10dp"
+                                                text:"กรุณาใช้ภาพต่างจากการทดสอบ"
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#f9423a'
+                                                text_size: self.size
+                                                
+
+                                            BoxLayout:
+                                                orientation: "horizontal"
+                                                spacing: "12dp"
+
+                                                MDFloatingActionButton:
+                                                    id:train
+                                                    icon: "folder-open-outline"
+                                                    type:"type_button"
+                                                    icon_color:1, 1, 1, 1
+                                                    md_bg_color:0, 0, 0, 1
+                                                    text_size: self.size
+                                                    halign:"center"
+                                                    valign: "middle"
+                                                    on_release:
+                                                        app.file_chooser("path_train")
+
+                                                Label:
+                                                    id:path_train
+                                                    text: ""
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    # halign:"right"
+                                                    pos_hint:{"center_y":0.7}
+
+                                            Label:
+                                                text:"2 ภาพที่ใช้ในการทดสอบ"
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                padding:"20dp","10dp"
+                                                text:"ในโฟลเดอร์ที่ใช้ในการทดสอบต้องประกอบด้วย โฟลเดอร์ slip และ not_slip"
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                padding:"20dp","10dp"
+                                                text:"กรุณาใช้ภาพต่างจากการฝึก"
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#f9423a'
+                                                text_size: self.size
+
+                                            BoxLayout:
+                                                orientation: "horizontal"
+                                                spacing: "12dp"
+
+                                                MDFloatingActionButton:
+                                                    id:test
+                                                    icon: "folder-open-outline"
+                                                    type:"type_button"
+                                                    icon_color:1, 1, 1,1
+                                                    md_bg_color:0, 0, 0, 1
+                                                    text_size: self.size
+                                                    on_release: 
+                                                        # app.file_manager_open("path_test")
+                                                        app.file_chooser("path_test")
+
+                                                Label:
+                                                    id:path_test
+                                                    text: ""
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    # halign:"right"
+                                                    pos_hint:{"center_y":0.7}
+
+                                    BoxLayout:
+                                        orientation: 'vertical'
+                                        spacing: "12dp"
+                                        size_hint:1,0.2
+                                        pos_hint:{"buttom":1}
+    
+                                        Button:
+                                            id:next_step
+                                            text:'ถัดไป'
+                                            color:'#223C5B'
+                                            background_color:'#ffffff'
+                                            background_normal:'#ffffff'
+                                            font_size:18
+                                            font_name: root.font
+                                            size_hint_x: None
+                                            width: 120
+                                            size_hint_y:None
+                                            height:50
+                                            pos_hint: {"right": 1}
+                                            disabled:True
+                                            on_release:
+                                                root.get_data_for_train(name_model.text)
+                                                step_trainng.transition.direction = 'left'
+                                                # step_trainng.current = "step2"
+
+                                Screen:
+                                    name:"step2"
+
+                                    BoxLayout:
+                                        orientation: 'vertical'
+                                        size_hint:1,0.7
+                                        spacing: "12dp"
+                                        pos_hint:{"top":1}
+
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            spacing: "12dp"
+
+                                            Label:
+                                                text:"ขั้นตอนที่ 2 สรุปข้อมูล"
+                                                font_name: root.font
+                                                font_size:24
+                                                underline:True
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                valign: "top"
+                                            Label:
+                                                text:"สรุปข้อมูลในการฝึกโมเดล"
+                                                font_name: root.font
+                                                font_size:20
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                valign: "top"
+                                                
+                                            Label:
+                                                id:namemodel
+                                                text: ""
+                                                halign:"left"
+                                                font_name: root.font
+                                                font_size:20
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                # valign: "top"
+
+                                            Label:
+                                                id:show_train
+                                                text: ""
+                                                # padding: '50dp', '0dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                text: "ในโฟลเดอร์ประกอบไปด้วย"
+                                                # padding: '0dp', '50dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                id:show_sub_train1
+                                                text: ""
+                                                padding: '50dp', '0dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size 
+                                            Label:
+                                                id:show_sub_train2
+                                                text: ""
+                                                padding: '50dp', '0dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                            
+                                            Widget:
+                                                id: separator
+                                                size_hint_y: None
+                                                height: 3
+                                                padding:20
+                                                canvas:
+                                                    Color:
+                                                        rgba: 192,192,192,0.3
+                                                    Rectangle:
+                                                        pos: 0, separator.center_y
+                                                        size: 1400, 2
+
+                                            Label:
+                                                id:show_test
+                                                text: ""
+                                                # padding: '0dp', '50dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+
+                                            Label:
+                                                text: "ในโฟลเดอร์ประกอบไปด้วย"
+                                                # padding: '0dp', '50dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                
+                                            Label:
+                                                id:show_sub_test1
+                                                text: ""
+                                                padding: '50dp', '0dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                
+                                            Label:
+                                                id:show_sub_test2
+                                                text: ""
+                                                padding: '50dp', '0dp'
+                                                font_name: root.font
+                                                font_size:18
+                                                color:'#ffffff'
+                                                text_size: self.size
+                                                
+                                    BoxLayout:
+                                        orientation: 'horizontal'
+                                        spacing: "12dp"
+                                        size_hint:1,0.3
+                                        pos_hint:{"buttom":1}
+
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            spacing: "12dp"
+                                                
+                                            Button:
+                                                text:'ย้อนกลับ'
+                                                color:'#ffffff'
+                                                background_color:'#223C5B'
+                                                background_normal:'#223C5B'
+                                                font_size:18
+                                                font_name: root.font
+                                                size_hint_x: None
+                                                width: 120
+                                                size_hint_y:None
+                                                height:50
+                                                pos_hint:{"left":1}
+                                                on_release:
+                                                    step_trainng.transition.direction = 'right'
+                                                    step_trainng.current = "step1"
+
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            spacing: "12dp"
+
+                                            Button:
+                                                id:creat_model
+                                                text:'สร้างโมเดล'
+                                                color:'#223C5B'
+                                                background_color:'#ffffff'
+                                                background_normal:'#ffffff'
+                                                font_size:18
+                                                font_name: root.font
+                                                size_hint_x: None
+                                                width: 120
+                                                size_hint_y:None
+                                                height:50
+                                                pos_hint: {"right": 1}
+                                                on_release:
+                                                    root.train_model()
+                                                    step_trainng.transition.direction = 'left'
+                                                    step_trainng.current = "step3"
+                                Screen:
+                                    name:"step3"
+
+                                    BoxLayout:
+                                        orientation: 'vertical'
+                                        spacing: "12dp"
+                                        size_hint:1,0.9
+                                        pos_hint:{"top":1}
+
+                                        ScrollView:
+
+                                            GridLayout:
+                                                # orientation: "vertical"
+                                                size_hint_y: None
+                                                height: self.minimum_height
+                                                row_default_height: 35
+                                                cols:1
+
+                                                Label:
+                                                    text:"ขั้นตอนที่ 3 สรุปผลการฝึก"
+                                                    font_name: root.font
+                                                    font_size:24
+                                                    underline:True
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    valign: "top"
+
+                                                Label:
+                                                    id:name
+                                                    # text: root.name_model
+                                                    font_name: root.font
+                                                    font_size:20
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    valign: "top"
+
+
+                                                Label:
+                                                    id:sum_train
+                                                    text:root.set_train
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    # valign: "top"
+
+                                                Label:
+                                                    id:total_train
+                                                    text:root.t_train
+                                                    padding: '50dp', '0dp'
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    # valign: "top"
+
+                                                Label:
+                                                    id:sum_test
+                                                    text:root.set_test
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    # valign: "top"
+
+                                                Label:
+                                                    id:total_test
+                                                    text:root.t_test
+                                                    padding: '50dp', '0dp'
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    # valign: "top"
+
+
+                                                Label:
+                                                    id:accuracy_txt
+                                                    text:""
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    valign: "top"
+
+                                                Label:
+                                                    id:loss_txt
+                                                    text:""
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    valign: "top"
+
+                                                Label:
+                                                    id:pre_txt
+                                                    text:""
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    valign: "top"
+
+                                                Label:
+                                                    id:rec_txt
+                                                    text:""
+                                                    font_name: root.font
+                                                    font_size:18
+                                                    color:'#ffffff'
+                                                    text_size: self.size
+                                                    valign: "top"
+
+                                                MDProgressBar:
+                                                    id: accuracy
+                                                    value: 0
+                                                    color:"#66ff66"
+                                                    size_hint: .5,.5
+                                                
+                                                MDGridLayout:
+                                                    cols:2
+                                                    adaptive_height: True
+                                                    size_hint_y: None
+                                                    spacing: '12dp'
+                                                    height: "500dp"
+
+                                                    Image:
+                                                        id:fig_acc
+                                                        source: ""
+                                                    Image:
+                                                        id:fig_loss
+                                                        source: ""
+                                                    
+                                                MDGridLayout:
+                                                    cols:2
+                                                    adaptive_height: True
+                                                    size_hint_y: None
+                                                    spacing: '12dp'
+                                                    height: "500dp"
+
+                                                    Image:
+                                                        id:fig_pre
+                                                        source: ""
+                                                    Image:
+                                                        id:fig_rec
+                                                        source: ""
+
+                                                
+                                    BoxLayout:
+                                        orientation: 'horizontal'
+                                        spacing: "12dp"
+                                        size_hint:1,0.1
+                                        pos_hint:{"buttom":1}
+
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            spacing: "12dp"
+                                        
+                                            Button:
+                                                text:'ยกเลิก'
+                                                color:'#ffffff'
+                                                background_color:'#f9423a'
+                                                background_normal:'#f9423a'
+                                                font_size:18
+                                                font_name: root.font
+                                                size_hint_x: None
+                                                width: 120
+                                                size_hint_y:None
+                                                height:50
+                                                font_name: root.font
+                                                pos_hint: {"left": 1}
+                                                on_release:
+                                                    step_trainng.transition.direction = 'right'
+                                                    step_trainng.current = "step1"
+                                                    root.reset_date()
+
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            spacing: "12dp"
+
+                                            Button:
+                                                text:'Export'
+                                                color:'#223C5B'
+                                                background_color:'#ffffff'
+                                                background_normal:'#ffffff'
+                                                font_size:18
+                                                font_name: root.font
+                                                size_hint_x: None
+                                                width: 120
+                                                size_hint_y:None
+                                                height:50
+                                                font_name: root.font
+                                                pos_hint: {"right": 1}
+                                                on_release:
+                                                    root.export_model()
+                                                    step_trainng.transition.direction = 'right'
+                                                    step_trainng.current = "step1"
+
+                    Screen:
+                        name:"tutorial"
+
+                        ScrollView:
+
+                            GridLayout:
+                                # orientation: "vertical"
+                                size_hint_y: None
+                                height: self.minimum_height
+                                row_default_height: 35
+                                cols:1
+                                    
+                                Label:
+                                    text: "วิธีการใช้งาน"
+                                    font_name: root.font
+                                    font_size:30
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+
+                                Label:
+                                    text: "การสร้างโมเดล"
+                                    font_name: root.font
+                                    font_size:24
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                    underline:True
+
+                                Label:
+                                    text: "1. ใส่ชื่อของโมเดล"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+
+                                Label:
+                                    text:"2. เลือกโฟลเดอร์ที่ต้องการใช้ในการฝึกโมเดล โดยในโฟลเดอร์ที่ใช้ในการฝึกต้องประกอบด้วยโฟลเดอร์ slip และ not_slip"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"3. เลือกโฟลเดอร์ที่ต้องการใช้ในการทดสอบโมเดล โดยในโฟลเดอร์ที่ใช้ในการฝึกต้องประกอบด้วยโฟลเดอร์ slip และ not_slip"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"4. กดปุ่ม ' ถัดไป '"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                                                    
+                                MDGridLayout:
+                                    cols:1
+                                    adaptive_height: True
+                                    size_hint_y: None
+                                    spacing: '12dp'
+                                    height: "500dp"
+
+                                    Image:
+                                        source: "Image/tutorial/t1234.png"
+                                
+                                Label:
+                                    text:"5. ตรวจสอบข้อมูลให้ถูกต้องก่อนสร้างโมเดล"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"6. หากต้องการแก้ไขให้กดปุ่ม ' ย้อนกลับ '"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"7. หากตรวจสอบแล้วว่าข้อมูลถูกต้องให้กดปุ่ม ' สร้างโมเดล ' เพื่อสร้างโมเดล"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                
+                                MDGridLayout:
+                                    cols:1
+                                    adaptive_height: True
+                                    size_hint_y: None
+                                    spacing: '12dp'
+                                    height: "500dp"
+
+                                    Image:
+                                        source: "Image/tutorial/t567.png"
+                               
+                                Label:
+                                    text:"8. กดปุ่ม ' Export ' เพื่อบันทึกโมเดล"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                
+                                Label:
+                                    text:"9. กดปุ่ม ' ยกเลิก ' เพื่อสร้างโมเดลใหม่"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+
+                                MDGridLayout:
+                                    cols:1
+                                    adaptive_height: True
+                                    size_hint_y: None
+                                    spacing: '12dp'
+                                    height: "500dp"
+
+                                    Image:
+                                        source: "Image/tutorial/t89.png"
+                                    
+                                
+                                Label:
+                                    text: "การตรวจสอบภาพ"
+                                    font_name: root.font
+                                    font_size:24
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                    underline:True
+
+                                Label:
+                                    text: "1. เลือกโมเดลที่ต้องการ"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+
+                                Label:
+                                    text:"2. เลือกโฟลเดอร์ที่ต้องการตรวจสอบภาพ"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"3. ใส่ข้อความที่ต้องการตรวจสอบภาพเพิ่มเติม"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"4. กดปุ่ม ' ตรวจสอบ ' เพื่อตรวจสอบภาพ"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                Label:
+                                    text:"5. ปุ่ม ' Export ' เพื่อดูภาพที่ตรวจสอบแล้ว"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                                                    
+                                MDGridLayout:
+                                    cols:1
+                                    adaptive_height: True
+                                    size_hint_y: None
+                                    spacing: '12dp'
+                                    height: "500dp"
+
+                                    Image:
+                                        source: "Image/tutorial/s12345.png"
+                                Label:
+                                    text: "การลบโมเดล"
+                                    font_name: root.font
+                                    font_size:24
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                    underline:True
+
+                                Label:
+                                    text: "1. เลือกโมเดลที่ต้องการลบ"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+
+                                Label:
+                                    text:"2. กดปุ่ม ' ลบ ' เพื่อลบโมเดลนั้น"
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size
+                                    valign: "middle"
+                                                                    
+                                MDGridLayout:
+                                    cols:1
+                                    adaptive_height: True
+                                    size_hint_y: None
+                                    spacing: '12dp'
+                                    height: "500dp"
+
+                                    Image:
+                                        source: "Image/tutorial/d12.png"
+
+                    Screen:
+                        name:"setting"
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: "12dp"
+                            size_hint:1,0.2
+                            pos_hint:{"top":1}
+                                
+                                
+                            Label:
+                                text: "ตั้งค่า"
+                                font_name: root.font
+                                font_size:24
+                                color:'#ffffff'
+                                text_size: self.size
+                                valign: "middle"
+
+                            Label:
+                                text: "โฟลเดอร์ที่ต้องการบันทึก Model"
+                                font_name: root.font
+                                font_size:18
+                                color:'#ffffff'
+                                text_size: self.size
+                                valign: "middle"
+
+                            BoxLayout:
+                                orientation: "horizontal"
+                                spacing: "12dp"
+
+                                MDFloatingActionButton:
+                                    icon: "folder-open-outline"
+                                    type:"type_button"
+                                    icon_color:1, 1, 1,1
+                                    md_bg_color:0, 0, 0, 1
+                                    text_size: self.size
+                                    # halign:"center"
+                                    # valign: "middle"
+                                    on_release: app.file_manager_open()
+
+                                Label:
+                                    id:path_folder
+                                    text: root.path
+                                    font_name: root.font
+                                    font_size:18
+                                    color:'#ffffff'
+                                    text_size: self.size   

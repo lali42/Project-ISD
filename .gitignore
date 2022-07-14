@@ -1,0 +1,8 @@
+node_modules
+keras
+INS/functions/__pycache__/*
+*.pyc
+INS/models/*
+INS/libary/*
+INS/DATASET/*
+INS/libary/TesseractOCR/*
